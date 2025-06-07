@@ -3,7 +3,6 @@ package ru.rzen.perfplayground.rest;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
@@ -19,52 +18,31 @@ import ru.rzen.perfplayground.service.UserService;
 
 @Tag(name = "User JPA", description = "Используем JPA")
 @RestController
-@RequestMapping("/jpa/users")
+@RequestMapping("/jpa/users-with-relations")
 @RequiredArgsConstructor
-public class UserController {
+public class UserWithRelationsController {
     private final UserService userService;
 
     @MeasureAndLogSlow(limit = 10)
     @GetMapping
     @PageableAsQueryParam
-    Page<UserDTO> getUsers(
+    Page<UserDTO> getUsersWithRelations(
         @ParameterObject UserFilter filter,
         @PageableDefault(sort = "id", size = 20)
         @Parameter(hidden = true) Pageable pageable
     ) {
-        return userService.findAll(filter, pageable);
+        return userService.findAllWithRelations(filter, pageable);
     }
 
     @MeasureAndLogSlow(limit = 10)
-    @GetMapping("with-work-before")
+    @GetMapping("separated")
     @PageableAsQueryParam
-    Page<UserDTO> getUsersAndDoWorkBefore(
+    Page<UserDTO> getUsersAndRelations(
         @ParameterObject UserFilter filter,
         @PageableDefault(sort = "id", size = 20)
         @Parameter(hidden = true) Pageable pageable
     ) {
-        doWork();
-
-        return userService.findAll(filter, pageable);
+        return userService.findAllAndRelations(filter, pageable);
     }
 
-    @MeasureAndLogSlow(limit = 10)
-    @GetMapping("with-work-after")
-    @PageableAsQueryParam
-    Page<UserDTO> getUsersAndDoWorkAfter(
-        @ParameterObject UserFilter filter,
-        @PageableDefault(sort = "id", size = 20)
-        @Parameter(hidden = true) Pageable pageable
-    ) {
-        var found = userService.findAll(filter, pageable);
-
-        doWork();
-
-        return found;
-    }
-
-    @SneakyThrows
-    private void doWork() {
-        Thread.sleep(100);
-    }
 }
