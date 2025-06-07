@@ -52,15 +52,20 @@ k6.exe --vus=20 --duration=100s .\<test-script>.js
 | Script                               | Requests | Rps           | OSIV | QUERIES | REASON                 |
 |--------------------------------------|----------|---------------|------|---------|------------------------|
 | jpa-user-with-relations-separated.js | 112183   | 1121.712831/s | NO   | 3       | BETTER in JPA queries  |
-| jpa-user-with-relations-separated.js | 114824   | 1148.07739/s  | YES  | 3       | BETTER for OSIV        |
+| jpa-user-with-relations-separated.js | 109186   | 1091.666174/s | YES  | 3       | BETTER for OSIV        |
 | jpa-user-with-relations.js           | 4722     | 47.064806/s   | NO   | 2       | In memory pagination   |
 | jpa-user-with-relations.js           | 4825     | 48.109755/s   | YES  | 2       | In memory pagination   |
-| jpa-user-with-work-after.js          | 12752    | 127.426923/s  | NO   | 2+N     | No CPU for handle      |
+| jpa-user-with-work-after.js          | 12752    | 127.426923/s  | NO   | 2+N     | No CPU                 |
 | jpa-user-with-work-after.js          | 6460     | 64.459638/s   | YES  | 2+N     | No CPU and connections |
 | jpa-user-with-work-before.js         | 12836    | 128.229522/s  | NO   | 2+N     | No CPU                 |
 | jpa-user-with-work-before.js         | 12877    | 128.700342/s  | YES  | 2+N     | No CPU                 |
-| jpa-user.js                          | 129552   | 1295.39251/s  | NO   | 2+N     | BINGO! same as Jooq    |
-| jpa-user.js                          | 31126    | 311.100617/s  | YES  | 2+N     | no connections and ?   |
+| jpa-user-with-work-parallel.js       | 18384    | 183.640275/s  | NO   | 2+N     | No CPU                 |
+| jpa-user-with-work-parallel.js       | 18303    | 182.835649/s  | YES  | 2+N     | No CPU                 |
+| jpa-user-with-work-parallel.js 10ms  | 30557    | 305.311594/s  | NO   | 2+N     | no connections and N+1 |
+| jpa-user-with-work-parallel.js 10ms  | 30018    | 300.011141/s  | YES  | 2+N     | no connections and N+1 |
+| simple-message-only-string.js        | 18441    | 184.220742/s  | NO   | 0       | No CPU                 |
+| jpa-user.js                          | 31255    | 312.413579/s  | NO   | 2+N     | no connections and N+1 |
+| jpa-user.js                          | 30739    | 307.231052/s  | YES  | 2+N     | no connections and N+1 |
 | jooq-user.js                         | 128656   | 1286.418942/s | NO   | 2       |                        |
 | jooq-user.js                         | 125668   | 1256.573425/s | YES  | 2       |                        |
 | jooq-user-min-json.js                | 129947   | 1299.333884/s | NO   | 3       |                        |
@@ -76,7 +81,7 @@ k6.exe --vus=20 --duration=100s .\<test-script>.js
 
 ### Другие языки / фреймворки аналог jooq-user-slice-min-json.js
 
-| Language/Framework/    | Requests | Rps           | QUERIES  | REASON                | BETTER IN                                  |
-|------------------------|----------|---------------|----------|-----------------------|--------------------------------------------|
-| Java/Jooby/Jooq/Hikari | 214747   | 2147.316961/s | 2        | no proxy / reflection | smaller heap size                          |
-| Go/Fiber/Sqlx/Pgx      | 191420   | 1914.05203/s  | 2        | native binary         | low memory ~10Mb, small artefact size ~3mb |
+| Language/Framework/    | Requests | Rps           | QUERIES  | REASON                | BETTER IN                                   |
+|------------------------|----------|---------------|----------|-----------------------|---------------------------------------------|
+| Java/Jooby/Jooq/Hikari | 214747   | 2147.316961/s | 2        | no proxy / reflection | smaller heap size                           |
+| Go/Fiber/Sqlx/Pgx      | 191420   | 1914.05203/s  | 2        | native binary         | low memory ~10Mb, small artefact size ~15Mb |
