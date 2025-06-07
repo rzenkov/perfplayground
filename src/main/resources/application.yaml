@@ -1,0 +1,34 @@
+server:
+  port: 8112
+  tomcat:
+    threads:
+      max: 200
+
+app:
+  enable-measure: false
+
+spring:
+  sql:
+    init:
+      mode: always
+  jooq:
+    sql-dialect: postgres
+  application.name: perfplayground
+  datasource:
+    url: jdbc:postgresql://localhost:54321/perfplayground
+    driver-class-name: org.postgresql.Driver
+    username: perfplayground
+    password: perfplayground
+    hikari:
+      register-mbeans: false
+      maximum-pool-size: 10
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: validate
+        show_sql: false
+        format_sql: true
+    open-in-view: true
+  threads:
+    virtual:
+      enabled: false

@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=perfplayground'
+      - 'POSTGRES_PASSWORD=perfplayground'
+      - 'POSTGRES_USER=perfplayground'
+    ports:
+      - '54321:5432'
