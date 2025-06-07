@@ -49,30 +49,30 @@ k6.exe --vus=20 --duration=100s .\<test-script>.js
 
 ### Final Benchmarks
 
-| Script                               | Requests | Rps           | OSIV | QUERIES |
-|--------------------------------------|----------|---------------|------|---------|
-| jpa-user-with-relations-separated.js | 112183   | 1121.712831/s | NO   | 3       |
-| jpa-user-with-relations-separated.js | 114824   | 1148.07739/s  | YES  | 3       |
-| jpa-user-with-relations.js           | 4722     | 47.064806/s   | NO   | 2       |
-| jpa-user-with-relations.js           | 4825     | 48.109755/s   | YES  | 2       |
-| jpa-user-with-work-after.js          | 12752    | 127.426923/s  | NO   | 2+N     |
-| jpa-user-with-work-after.js          | 6460     | 64.459638/s   | YES  | 2+N     |
-| jpa-user-with-work-before.js         | 12836    | 128.229522/s  | NO   | 2+N     |
-| jpa-user-with-work-before.js         | 12877    | 128.700342/s  | YES  | 2+N     |
-| jpa-user.js                          | 129552   | 1295.39251/s  | NO   | 2+N     |
-| jpa-user.js                          | 31126    | 311.100617/s  | YES  | 2+N     |
-| jooq-user.js                         | 128656   | 1286.418942/s | NO   | 2       |
-| jooq-user.js                         | 125668   | 1256.573425/s | YES  | 2       |
-| jooq-user-min-json.js                | 129947   | 1299.333884/s | NO   | 3       |
-| jooq-user-min-json.js                | 130204   | 1301.913368/s | YES  | 3       |
-| jooq-user-slice.js                   | 95819    | 957.964119/s  | NO   | 1       |
-| jooq-user-slice.js                   | 97551    | 975.392012/s  | YES  | 1       |
-| jooq-user-slice-min-json.js          | 174409   | 1743.910773/s | NO   | 2       |
-| jooq-user-slice-min-json.js          | 178108   | 1780.962465/s | YES  | 2       |
-| simple-message.js                    | 210406   | 2103.893473/s | NO   | 2       |
-| simple-message.js                    | 209146   | 2091.308727/s | YES  | 2       |
-| simple-message-with-work.js          | 16563    | 165.425161/s  | NO   | 2       |
-| simple-message-with-work.js          | 16520    | 165.034789/s  | YES  | 2       |
+| Script                               | Requests | Rps           | OSIV | QUERIES | REASON                 |
+|--------------------------------------|----------|---------------|------|---------|------------------------|
+| jpa-user-with-relations-separated.js | 112183   | 1121.712831/s | NO   | 3       | BETTER in JPA queries  |
+| jpa-user-with-relations-separated.js | 114824   | 1148.07739/s  | YES  | 3       | BETTER for OSIV        |
+| jpa-user-with-relations.js           | 4722     | 47.064806/s   | NO   | 2       | In memory pagination   |
+| jpa-user-with-relations.js           | 4825     | 48.109755/s   | YES  | 2       | In memory pagination   |
+| jpa-user-with-work-after.js          | 12752    | 127.426923/s  | NO   | 2+N     | No CPU for handle      |
+| jpa-user-with-work-after.js          | 6460     | 64.459638/s   | YES  | 2+N     | No CPU and connections |
+| jpa-user-with-work-before.js         | 12836    | 128.229522/s  | NO   | 2+N     | No CPU                 |
+| jpa-user-with-work-before.js         | 12877    | 128.700342/s  | YES  | 2+N     | No CPU                 |
+| jpa-user.js                          | 129552   | 1295.39251/s  | NO   | 2+N     | BINGO! same as Jooq    |
+| jpa-user.js                          | 31126    | 311.100617/s  | YES  | 2+N     | no connections and ?   |
+| jooq-user.js                         | 128656   | 1286.418942/s | NO   | 2       |                        |
+| jooq-user.js                         | 125668   | 1256.573425/s | YES  | 2       |                        |
+| jooq-user-min-json.js                | 129947   | 1299.333884/s | NO   | 3       |                        |
+| jooq-user-min-json.js                | 130204   | 1301.913368/s | YES  | 3       |                        |
+| jooq-user-slice.js                   | 95819    | 957.964119/s  | NO   | 1       | JSON in pg             |
+| jooq-user-slice.js                   | 97551    | 975.392012/s  | YES  | 1       | JSON in pg             |
+| jooq-user-slice-min-json.js          | 174409   | 1743.910773/s | NO   | 2       |                        |
+| jooq-user-slice-min-json.js          | 178108   | 1780.962465/s | YES  | 2       |                        |
+| simple-message.js                    | 210406   | 2103.893473/s | NO   | 2       |                        |
+| simple-message.js                    | 209146   | 2091.308727/s | YES  | 2       |                        |
+| simple-message-with-work.js          | 16563    | 165.425161/s  | NO   | 2       | No CPU                 |
+| simple-message-with-work.js          | 16520    | 165.034789/s  | YES  | 2       | No CPU                 |
 
 ### Другие языки / фреймворки аналог jooq-user-slice-min-json.js
 
