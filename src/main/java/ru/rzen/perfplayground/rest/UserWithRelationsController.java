@@ -44,5 +44,4 @@ public class UserWithRelationsController {
     ) {
         return userService.findAllAndRelations(filter, pageable);
     }
-
 }

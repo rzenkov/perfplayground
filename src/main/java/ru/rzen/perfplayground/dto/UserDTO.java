@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import ru.rzen.perfplayground.domain.TypeOfPosition;
 import ru.rzen.perfplayground.domain.User;
 
 /**
@@ -43,6 +44,8 @@ public record UserDTO(
             .map(el -> SelectsItem.of(el.getId(), el.getName()))
             .sorted(Comparator.comparing(SelectsItem::label))
             .toList();
+        var isManager = user.getPositions().stream()
+            .anyMatch(el -> el.getType() == TypeOfPosition.MANAGER);
 
         return new UserDTO(
             user.getId(),
@@ -51,7 +54,7 @@ public record UserDTO(
             user.getMiddleName(),
             subdivision,
             positions,
-            user.isManager()
+            isManager
         );
     }
 

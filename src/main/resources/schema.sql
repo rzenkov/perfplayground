@@ -40,6 +40,37 @@ create table if not exists user_to_position
     position_id uuid
 );
 
+DO '
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = lower(''FK_USERTOPOSITION_ON_USERS''))
+    THEN
+        alter table user_to_position
+            ADD CONSTRAINT FK_USERTOPOSITION_ON_USERS
+                FOREIGN KEY (user_id) REFERENCES users (id);
+    END IF;
+END ';
+
+DO '
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = lower(''FK_USERTOPOSITION_ON_POSITION''))
+    THEN
+        alter table user_to_position
+            ADD CONSTRAINT FK_USERTOPOSITION_ON_POSITION
+                FOREIGN KEY (position_id) REFERENCES position (id);
+    END IF;
+END ';
+
+DO '
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = lower(''FK_USERS_ON_SUBDIVISION''))
+    THEN
+        alter table users
+            ADD CONSTRAINT FK_USERS_ON_SUBDIVISION
+                FOREIGN KEY (subdivision_id) REFERENCES subdivision (id);
+    END IF;
+END ';
+
+
 insert into position(id, name, type)
 select gen_random_uuid(),
        array_to_string(

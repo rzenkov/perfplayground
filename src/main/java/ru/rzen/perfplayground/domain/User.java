@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Formula;
 
 @Getter
 @Setter
@@ -39,14 +38,5 @@ public class User extends Identifiable {
         inverseJoinColumns = @JoinColumn(name = "position_id")
     )
     private Set<Position> positions = new HashSet<>();
-
-    @Formula("""
-        (select count(*) > 0
-            from user_to_position up
-            left join position p
-            on up.position_id = p.id
-            where p.type = 'MANAGER' and up.user_id = id)
-        """)
-    private boolean manager = false;
 
 }
