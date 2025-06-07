@@ -46,9 +46,9 @@ jooq {
 			generationTool {
 				jdbc {
 					driver = 'org.postgresql.Driver'
-					url = 'jdbc:postgresql://localhost:5432/jooqplayground'
-					user = 'jooqplayground'
-					password = 'jooqplayground'
+					url = 'jdbc:postgresql://localhost:54321/perfplayground'
+					user = 'perfplayground'
+					password = 'perfplayground'
 					properties {
 						property {
 							key = 'ssl'
@@ -69,7 +69,7 @@ jooq {
 						fluentSetters = true
 					}
 					target {
-						packageName = 'ru.rzen.jooqplayground.jooq'
+						packageName = 'ru.rzen.perflayground.jooq'
 						directory = 'src/jooq/java'
 					}
 					strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
