@@ -2,10 +2,13 @@ package ru.rzen.perfplayground.rest;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.core.task.VirtualThreadTaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +26,7 @@ import ru.rzen.perfplayground.service.UserService;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final VirtualThreadTaskExecutor virtualThreadTaskExecutor;
 
     @MeasureAndLogSlow(limit = 10)
     @GetMapping
@@ -61,6 +65,37 @@ public class UserController {
         doWork();
 
         return found;
+    }
+
+    @MeasureAndLogSlow(limit = 10)
+    @GetMapping("with-work-parallel")
+    @PageableAsQueryParam
+    CompletableFuture<Page<UserDTO>> getUsersAndDoWorkParallel(
+        @ParameterObject UserFilter filter,
+        @PageableDefault(sort = "id", size = 20)
+        @Parameter(hidden = true) Pageable pageable
+    ) {
+        var usersFeature = CompletableFuture
+            .supplyAsync(() -> userService.findAll(filter, pageable));
+
+        var workFeature = CompletableFuture
+            .supplyAsync(() -> {
+                doWork();
+                return "YES";
+            }, virtualThreadTaskExecutor);
+
+        var waitingForWorkDone = CompletableFuture.allOf(
+            usersFeature, workFeature
+        );
+
+        return waitingForWorkDone.thenApply(blank ->
+                Pair.of(usersFeature.join(), workFeature.join()))
+            .thenApply(pair -> {
+                if (pair.getRight().equals("YES")) {
+                    return pair.getLeft();
+                }
+                return Page.empty();
+            });
     }
 
     @SneakyThrows

@@ -45,6 +45,13 @@ public class SimpleMessageController {
             .map(el -> new SimpleMessage(el.getId(), el.getBody()));
     }
 
+    @GetMapping("only-string")
+    String getString() {
+        doWork();
+        return "YES";
+    }
+
+
     @SneakyThrows
     private void doWork() {
         Thread.sleep(100);
